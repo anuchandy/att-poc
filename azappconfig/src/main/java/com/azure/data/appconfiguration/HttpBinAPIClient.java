@@ -1,5 +1,7 @@
 package com.azure.data.appconfiguration;
 
+import com.azure.core.implementation.RetrofitAPIClient;
+
 import java.io.IOException;
 
 import retrofit2.Call;
