@@ -165,67 +165,30 @@ public class JacksonAdapter implements SerializerAdapter {
         final ObjectMapper mapper = encoding == SerializerEncoding.XML? xmlMapper : jsonMapper;
         final MediaType mediaType = encoding == SerializerEncoding.XML? MediaType.parse("application/xml; charset=UTF-8") : MediaType.parse("application/json; charset=UTF-8");
 
-//        return new Converter.Factory() {
-//            @Override
-//            public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-//                return value -> RequestBody.create(mapper.writeValueAsBytes(value), mediaType);
-//            }
-//
-//            @Override
-//            public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-//                final JavaType javaType = createJavaType(type);
-//                final ObjectReader objectReader = mapper.readerFor(javaType);
-//                //
-//                return (Converter<ResponseBody, Object>) body -> {
-//                    Reader bodyReader = body.charStream();
-//                    try {
-//                        return objectReader.readValue(bodyReader);
-//                    } catch (JsonParseException jpe) {
-//                        throw new MalformedValueException(jpe.getMessage(), jpe);
-//                    } finally {
-//                        if (bodyReader != null) {
-//                            try {
-//                                bodyReader.close();
-//                            } catch (IOException ignored) {
-//                            }
-//                        }
-//                    }
-//                };
-//            }
-//        };
-
         return new Converter.Factory() {
             @Override
-            public Converter<ResponseBody, ?> responseBodyConverter(final Type type, Annotation[] annotations, Retrofit retrofit) {
-                return new Converter<ResponseBody, Object>() {
-                    final JavaType javaType = createJavaType(type);
-                    final ObjectReader objectReader = mapper.readerFor(javaType);
-                    //
-                    @Override
-                    public Object convert(ResponseBody body) throws IOException {
-                        Reader bodyReader = body.charStream();
-                        try {
-                            return objectReader.readValue(bodyReader);
-                        } catch (JsonParseException jpe) {
-                            throw new MalformedValueException(jpe.getMessage(), jpe);
-                        } finally {
-                            if (bodyReader != null) {
-                                try {
-                                    bodyReader.close();
-                                } catch (IOException ignored) {
-                                }
-                            }
-                        }
-                    }
-                };
+            public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
+                return value -> RequestBody.create(mapper.writeValueAsBytes(value), mediaType);
             }
 
             @Override
-            public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-                return new Converter<Object, RequestBody>() {
-                    @Override
-                    public RequestBody convert(Object value) throws IOException {
-                        return RequestBody.create(mapper.writeValueAsBytes(value), mediaType);
+            public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
+                final JavaType javaType = createJavaType(type);
+                final ObjectReader objectReader = mapper.readerFor(javaType);
+                //
+                return (Converter<ResponseBody, Object>) body -> {
+                    Reader bodyReader = body.charStream();
+                    try {
+                        return objectReader.readValue(bodyReader);
+                    } catch (JsonParseException jpe) {
+                        throw new MalformedValueException(jpe.getMessage(), jpe);
+                    } finally {
+                        if (bodyReader != null) {
+                            try {
+                                bodyReader.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
                     }
                 };
             }
