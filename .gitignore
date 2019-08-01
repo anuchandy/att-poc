@@ -88,6 +88,9 @@ out/
 .gradle/
 build/
 
+# Test config file
+azConfigSettings.txt
+
 # Local configuration file (sdk path, etc)
 local.properties
 
