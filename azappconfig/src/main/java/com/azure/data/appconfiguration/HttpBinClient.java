@@ -10,7 +10,7 @@ public class HttpBinClient {
     private HttpBinService api;
 
     private HttpBinClient(String baseUrl) {
-        this.api = RetrofitAPIClient.createAPIService(baseUrl, HttpBinService.class);
+        this.api = RetrofitAPIClient.createAPIService(baseUrl, null, HttpBinService.class);
     }
 
     public static HttpBinClient create() {

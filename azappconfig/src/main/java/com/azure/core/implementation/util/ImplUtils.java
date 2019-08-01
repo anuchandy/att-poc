@@ -3,6 +3,10 @@
 
 package com.azure.core.implementation.util;
 
+import android.text.TextUtils;
+
+import com.azure.core.implementation.util.function.Function;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -95,7 +99,7 @@ public final class ImplUtils {
         return charSequence == null || charSequence.length() == 0;
     }
 
-//   Function available starting from API Level 24.
+//    todo: anuchan: Function available starting from API Level 24., below Function is from com.azure.core.implementation.util.function package
 //    /*
 //     * Turns an array into a string mapping each element to a string and delimits them using a coma.
 //     * @param array Array being formatted to a string.
@@ -103,13 +107,18 @@ public final class ImplUtils {
 //     * @param <T> Generic representing the type of the array.
 //     * @return Array with each element mapped and delimited, otherwise null if the array is empty or null.
 //     */
-//    public static <T> String arrayToString(T[] array, Function<T, String> mapper) {
-//        if (isNullOrEmpty(array)) {
-//            return null;
-//        }
-//
-//        return Arrays.stream(array).map(mapper).collect(Collectors.joining(COMMA));
-//    }
+    public static <T> String arrayToString(T[] array, Function<T, String> mapper) {
+        if (isNullOrEmpty(array)) {
+            return null;
+        }
+        String [] mappedArray = new String[array.length];
+        int i = 0;
+        for (T item : array) {
+            mappedArray[i] = mapper.apply(item);
+            i++;
+        }
+        return TextUtils.join(COMMA, mappedArray);
+    }
 
     /*
      * Returns the first instance of the given class from an array of Objects.
