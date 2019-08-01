@@ -15,14 +15,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
+import java.io.StringReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -109,14 +108,7 @@ public class JacksonAdapter implements SerializerAdapter {
         if (object == null) {
             return null;
         }
-        StringWriter writer = new StringWriter();
-        if (encoding == SerializerEncoding.XML) {
-            // xmlMapper.writeValue(writer, object);
-        } else {
-            jsonMapper.writeValue(writer, object);
-        }
-
-        return writer.toString();
+        return encoding == SerializerEncoding.XML ? xmlMapper.writeValueAsString(object) : jsonMapper.writeValueAsString(object);
     }
 
     @Override
@@ -152,12 +144,21 @@ public class JacksonAdapter implements SerializerAdapter {
         }
         //
         final JavaType javaType = createJavaType(type);
-        return null;
-//        try {
-//            return encoding == SerializerEncoding.XML ? (T) xmlMapper.readValue(value, javaType) : (T) jsonMapper.readValue(value, javaType);
-//        } catch (JsonParseException jpe) {
-//            throw new MalformedValueException(jpe.getMessage(), jpe);
-//        }
+        final ObjectMapper mapper = encoding == SerializerEncoding.XML? xmlMapper : jsonMapper;
+        Reader reader = new StringReader(value);
+        //
+        try {
+            return mapper.readerFor(javaType).readValue(reader);
+        } catch (JsonParseException jpe) {
+            throw new MalformedValueException(jpe.getMessage(), jpe);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
     }
 
     @Override
@@ -174,12 +175,11 @@ public class JacksonAdapter implements SerializerAdapter {
             @Override
             public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
                 final JavaType javaType = createJavaType(type);
-                final ObjectReader objectReader = mapper.readerFor(javaType);
                 //
                 return (Converter<ResponseBody, Object>) body -> {
                     Reader bodyReader = body.charStream();
                     try {
-                        return objectReader.readValue(bodyReader);
+                        return mapper.readerFor(javaType).readValue(bodyReader);
                     } catch (JsonParseException jpe) {
                         throw new MalformedValueException(jpe.getMessage(), jpe);
                     } finally {
