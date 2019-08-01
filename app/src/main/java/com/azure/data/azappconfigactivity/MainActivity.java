@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.azure.data.appconfiguration.HttpBinAPIClient;
+import com.azure.data.appconfiguration.HttpBinClient;
 import com.azure.data.appconfiguration.HttpBinJSON;
 
 import java.util.concurrent.Callable;
@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button button;
     private TextView textView;
-    private HttpBinAPIClient client;
+    private HttpBinClient client;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //
         button.setOnClickListener(this);
         //
-        client = HttpBinAPIClient.create();
+        client = HttpBinClient.create();
     }
 
     @Override protected void onDestroy() {

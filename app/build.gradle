@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
+
     defaultConfig {
         applicationId "com.azure.data.azappconfigactivity"
         minSdkVersion 23
@@ -12,11 +13,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    android {
-        compileOptions {
-            sourceCompatibility 1.8
-            targetCompatibility 1.8
-        }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
     buildTypes {

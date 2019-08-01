@@ -2,7 +2,7 @@ package com.azure.core;
 
 import com.azure.core.implementation.serializer.SerializerEncoding;
 import com.azure.core.implementation.serializer.jackson.JacksonAdapter;
-import com.azure.data.appconfiguration.HttpBinAPIClient;
+import com.azure.data.appconfiguration.HttpBinClient;
 import com.azure.data.appconfiguration.HttpBinJSON;
 
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class RequestResponseSerializationTests {
         server.start();
 
         HttpUrl baseUrl = server.url("/");
-        HttpBinAPIClient client = HttpBinAPIClient.create(baseUrl.toString());
+        HttpBinClient client = HttpBinClient.create(baseUrl.toString());
 
         HttpBinJSON httpBinJSONRes = client.getAnything();
         assertEquals("wow", httpBinJSONRes.url());
