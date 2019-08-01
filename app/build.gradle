@@ -38,7 +38,4 @@ dependencies {
     //
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
-    // To fix: java.lang.NoClassDefFoundError: Failed resolution of: Ljavax/xml/stream/XMLInputFactory;
-    // https://stackoverflow.com/a/47371517/1473510
-    implementation group: 'javax.xml.stream', name: 'stax-api', version: '1.0-2'
 }

@@ -14,15 +14,19 @@ public class HttpBinAPIClient {
         Call<HttpBinJSON> getAnything();
     }
     //
-    private final String baseUrl = "https://httpbin.org";
+    private static final String DEFAULT_BASE_URL = "https://httpbin.org";
     private HttpBinAPI api;
 
-    private HttpBinAPIClient() {
+    private HttpBinAPIClient(String baseUrl) {
         this.api = RetrofitAPIClient.createAPIService(baseUrl, HttpBinAPI.class);
     }
 
     public static HttpBinAPIClient create() {
-        return new HttpBinAPIClient();
+        return create(DEFAULT_BASE_URL);
+    }
+
+    public static HttpBinAPIClient create(String baseUrl) {
+        return new HttpBinAPIClient(baseUrl);
     }
 
     public HttpBinJSON getAnything() {
